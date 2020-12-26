@@ -3,7 +3,7 @@ import Home from '../views/Home.vue'
 import CreateUser from '../components/CreateUser.vue'
 import EditUser from '../components/EditUser.vue'
 import Login from '../views/Login.vue'
-import Users from '../components/Users'
+
 
 const routes = [
   {
@@ -15,23 +15,19 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: Home,
-    // component:()=>import('../views/Home')
+    component:()=>import('../views/Home')
   },
   {
     path: '/home/createuser',
     name: 'CreateUser',
     component:CreateUser,
-  //  component: () => import( '../components/CreateUser')
+   component: () => import( '../components/CreateUser')
   },{
     path: '/home/edituser/:userId',
     name: 'EditUser',
     component:EditUser,
     props:true,
-    // component: () => import( '../components/EditUser')
-  },{
-    path:'/home/users',
-    name:'Users',
-    component:Users
+    component: () => import( '../components/EditUser')
   }
 ]
 
