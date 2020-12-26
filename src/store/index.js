@@ -37,25 +37,10 @@ export default createStore({
     },
     updateUser(state,payload) {
       state.users.find(user => user.id === payload.id)
-      // Object.assign(state.users.find(user => user.id === payload.id),payload.user);
-      // console.log(Object.assign(payload.user,state.users.find(user => user.id === payload.id)));
-  
-      //Find index of specific object using findIndex method.    
-      console.log(payload.user);
+       //Find index of specific object using findIndex method.    
       let objIndex = state.users.findIndex((obj => obj.id == payload.id));
-      console.log('the index is : ',objIndex,': old object :', state.users[objIndex]);
       state.users[objIndex]=payload.user;
-      console.log('the index is : ',objIndex,': new object :', state.users[objIndex]);
-      //delete old
-      // state.users = state.users.filter(
-      //   (user) => user.id != payload.id
-      // );
-      // state.mutations.deleteUser(state,paylad.id);
-      //add new one
-      // state.users.push(payload.user);
-    },isExist(state,user){
-      
-    }
+    },
 
   },
   getters: {

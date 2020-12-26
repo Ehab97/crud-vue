@@ -35,7 +35,7 @@
               <input type="text" class="form-control" v-model="phone" />
             </div>
             <div class="mb-3">
-              <label>Example select</label>
+              <label>select department</label>
               <select class="form-control" v-model="department">
                 <option v-for="dept in departments" :key="dept">
                   {{ dept.name }}
@@ -77,7 +77,7 @@ export default {
           lastName: "",
           email: "",
           password: "",
-          department: ""
+          department: "",
         },
       ],
       checker: "",
@@ -85,36 +85,29 @@ export default {
   },
   methods: {
     handleSubmit() {
-      if (this.username < 4) {
-        this.checker = "user name must not be less than four";
+      if (this.username.length < 4) {
+        return (this.checker = "user name must not be less than four");
       } else if (
-        this.firstName < 5 ||
-        this.checkLetter(this.firstName) ||
-        this.lastName < 5 ||
-        this.checkLetter(this.lastName)
+        this.firstName.length < 5 ||
+        !this.checkLetter(this.firstName) ||
+        this.lastName.length < 5 ||
+        !this.checkLetter(this.lastName)
       ) {
-        this.checker =
-          "last name and first name  must not be less than 5 and start with charactar";
-      } else if (this.checkePassword(this.password)) {
-        this.checker =
-          "password must not be less than 8 or numbers and must contain at leastone character capital, one number and one special character";
-      } else if (this.department == "") {
-        this.checker = "select department";
-      } else if (this.validatePhone(this.phone)) {
-        this.checker = "Enter valid phone number please";
+        return (this.checker =
+          "last name and first name  must not be less than 5 and start with charactar");
+      } else if (!this.checkePassword(this.password)) {
+        return (this.checker =
+          "password must not be less than 8 or numbers and must contain at leastone character capital, one number and one special character");
+      } else if (!this.ValidateEmail(this.email)) {
+        return (this.checker = "Enter valid  email please");
+      } else if (!this.validatePhone(this.phone)||!this.isExistPhone(this.phone)) {
+        return (this.checker = "Enter valid phone number please");
+      }else if (this.department.length <1) {
+        return this.checker = "select department";
+      } else {
+        this.push();
+        this.$router.push("/home");
       }
-
-      this.user.id = parseInt(new Date().getTime().toString().concat(performance.now()),10);
-      this.user.username = this.username;
-      this.user.firstName = this.firstName;
-      this.user.lastName = this.lastName;
-      this.user.phone = this.phone;
-      this.user.email = this.email;
-      this.user.password = this.password;
-      this.user.department = this.department;
-      this.$store.commit('addUser',this.user);
-      // this.$store.state.users.push(this.user);
-      //   console.log(this.$store.state.users);
     },
     checkLetter(name) {
       const letters = /^[A-Za-z]+$/;
@@ -144,12 +137,41 @@ export default {
       }
       return false;
     },
+    isExistPhone(number) {
+      for (var i = 0; i < this.$store.getters.getUsers.length; i++) {
+        if (this.$store.getters.getUsers[i].phone === number) {
+          return true;
+        }
+      }
+      return false;
+    },
+    push() {
+      this.user.id = parseInt(
+        new Date().getTime().toString().concat(performance.now()),
+        10
+      );
+      this.user.username = this.username;
+      this.user.firstName = this.firstName;
+      this.user.lastName = this.lastName;
+      this.user.phone = this.phone;
+      this.user.email = this.email;
+      this.user.password = this.password;
+      this.user.department = this.department;
+      this.$store.commit("addUser", this.user);
+    },
   },
 };
 </script>
 
 <style>
+form {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  padding: 30px 15px;
+  margin: 30px auto;
+}
 .btn {
-  width: 120px;
+  width: 150px !important ;
 }
 </style>

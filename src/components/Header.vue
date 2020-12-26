@@ -30,5 +30,8 @@ nav a:hover{
      border: none;
      text-decoration: none;
 }
+.btn{
+     width: 100px;
+}
 
 </style>

@@ -36,23 +36,18 @@
               <input type="text" class="form-control" v-model="phone" />
             </div>
             <div class="mb-3">
-              <label>Example select</label>
+              <label>select department</label>
               <select class="form-control" v-model="department">
                 <option v-for="dept in departments" :key="dept">
                   {{ dept.name }}
                 </option>
               </select>
             </div>
-            <button
-              class="btn btn-primary"
-              
-              @click.prevent="push"
-            >
-            <!-- @click.prevent="handleSubmit" -->
+            <button class="btn btn-primary" @click.prevent="handleSubmit">
               Save
             </button>
-            <div class="alert alert-danger mt-5" role="alert" v-if="msgError">
-              {{ msgError }}
+            <div class="alert alert-danger mt-5" role="alert" v-if="checker">
+              {{ checker }}
             </div>
           </form>
         </div>
@@ -89,31 +84,32 @@ export default {
         },
       ],
       checker: "",
-      payload: {
-        id: 0,
-        user: [],
-      },
     };
   },
   methods: {
     handleSubmit() {
-      if (this.username < 4) {
-        this.checker = "user name must not be less than four";
+      if (this.username.length < 4) {
+        return (this.checker = "user name must not be less than four");
       } else if (
-        this.firstName < 5 ||
-        this.checkLetter(this.firstName) ||
-        this.lastName < 5 ||
-        this.checkLetter(this.lastName)
+        this.firstName.length < 5 ||
+        !this.checkLetter(this.firstName) ||
+        this.lastName.length < 5 ||
+        !this.checkLetter(this.lastName)
       ) {
-        this.checker =
-          "last name and first name  must not be less than 5 and start with charactar";
-      } else if (this.checkePassword(this.password)) {
-        this.checker =
-          "password must not be less than 8 or numbers and must contain at leastone character capital, one number and one special character";
-      } else if (this.department == "") {
-        this.checker = "select department";
-      } else if (this.validatePhone(this.phone)) {
-        this.checker = "Enter valid phone number please";
+        return (this.checker =
+          "last name and first name  must not be less than 5 and start with charactar");
+      } else if (!this.checkePassword(this.password)) {
+        return (this.checker =
+          "password must not be less than 8 or numbers and must contain at leastone character capital, one number and one special character");
+      } else if (!this.ValidateEmail(this.email)) {
+        return (this.checker = "Enter valid  email please");
+      } else if (!this.validatePhone(this.phone)||!this.isExistPhone(this.phone)) {
+        return (this.checker = "Enter valid phone number please");
+      }else if (this.department.length <1) {
+        return this.checker = "select department";
+      } else {
+        this.push();
+        this.$router.push("/home");
       }
     },
     checkLetter(name) {
@@ -144,6 +140,14 @@ export default {
       }
       return false;
     },
+    isExistPhone(number) {
+      for (var i = 0; i < this.$store.getters.getUsers.length; i++) {
+        if (this.$store.getters.getUsers[i].phone === number) {
+          return true;
+        }
+      }
+      return false;
+    },
     push() {
       this.clonedUser.id = this.userId;
       this.clonedUser.username = this.username;
@@ -153,23 +157,23 @@ export default {
       this.clonedUser.email = this.email;
       this.clonedUser.password = this.password;
       this.clonedUser.department = this.department;
-      //this.$route.params.userId,this.clonedUser
-      this.payload.id = this.userId;
-      this.payload.user.push(this.clonedUser);
-      this.$store.commit("updateUser", {id:this.userId,user:this.clonedUser});
-      // console.log(this.payload);
+      this.$store.commit("updateUser", {
+        id: this.userId,
+        user: this.clonedUser,
+      });
     },
   },
   async created() {
     this.userId = this.$route.params.userId;
-    this.userId=this.item.id;
-    this.username=this.item.username;
-    this.firstName=this.item.firstName;
-    this.lastName=this.item.lastName;
-    this.phone=this.item.phone;
-    this.email=this.item.email;
-    this.password=this.item.password;
-    this.department=this.item.deprtment;
+    this.userId = this.item.id;
+    this.username = this.item.username;
+    this.firstName = this.item.firstName;
+    this.lastName = this.item.lastName;
+    this.phone = this.item.phone;
+    this.email = this.item.email;
+    this.password = this.item.password;
+    // this.department = this.item.deprtment;
+    console.log(this.deprtment)
   },
   computed: {
     item() {
@@ -178,9 +182,18 @@ export default {
       );
     },
   },
-  
 };
 </script>
 
 <style>
+form {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  padding: 30px 15px;
+  margin: 30px auto;
+}
+.btn {
+  width: 150px;
+}
 </style>
