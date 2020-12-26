@@ -45,9 +45,10 @@
             </div>
             <button
               class="btn btn-primary"
-              @click.prevent="handleSubmit"
-              @click="push"
+              
+              @click.prevent="push"
             >
+            <!-- @click.prevent="handleSubmit" -->
               Save
             </button>
             <div class="alert alert-danger mt-5" role="alert" v-if="msgError">
@@ -155,15 +156,12 @@ export default {
       //this.$route.params.userId,this.clonedUser
       this.payload.id = this.userId;
       this.payload.user.push(this.clonedUser);
-      this.$store.commit("updateUser", this.payload);
-      console.log(this.clonedUser,this.payload);
+      this.$store.commit("updateUser", {id:this.userId,user:this.clonedUser});
+      // console.log(this.payload);
     },
   },
   async created() {
     this.userId = this.$route.params.userId;
-    console.log(this.clonedUser);
-    // this.clonedUser.id=this.userId;
-    // console.log(this.$store.getters.getUser(parseInt(this.userId,10)))
     this.userId=this.item.id;
     this.username=this.item.username;
     this.firstName=this.item.firstName;
@@ -172,7 +170,6 @@ export default {
     this.email=this.item.email;
     this.password=this.item.password;
     this.department=this.item.deprtment;
-    this.push();
   },
   computed: {
     item() {

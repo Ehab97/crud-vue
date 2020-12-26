@@ -1,6 +1,6 @@
 <template> 
    <nav>
-      <router-link to="/home/users">users</router-link> |
+      <router-link to="/home">Home</router-link> |
       <router-link to="/home/createuser">Create user</router-link>
     </nav>
 </template>

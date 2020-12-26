@@ -27,7 +27,6 @@
 
 <script>
 import Header from "./Header";
-import { mapState } from "vuex";
 export default {
   data() {
     return {
