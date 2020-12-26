@@ -26,14 +26,37 @@ export default createStore({
       }
     ],
     counter: 0
-    
+
   },
   mutations: {
+    addUser(state, user) {
+      state.users.push(user);
+    },
     deleteUser(state, id) {
       state.users = state.users.filter(user => user.id !== id);
-      console.log(state.users, id);
+    },
+    updateUser(state,payload) {
+      //delete old
+      state.users = state.users.filter(
+        (user) => user.id != payload.id
+      );
+      // state.mutations.deleteUser(state,paylad.id);
+      //add new one
+      state.users.push(payload.user);
+    },isExist(state,user){
+      
     }
-  
+
+  },
+  getters: {
+    getUsers(state) {
+      return state.users
+    },
+    getUser: (state) => (id) => {
+      {
+        return state.users.find(user => user.id === id)
+      }
+    }
   },
   actions: {},
   modules: {}

@@ -103,7 +103,8 @@ export default {
       } else if (this.validatePhone(this.phone)) {
         this.checker = "Enter valid phone number please";
       }
-      this.user.id = Math.random();
+
+      this.user.id = parseInt(new Date().getTime().toString().concat(performance.now()),10);
       this.user.username = this.username;
       this.user.firstName = this.firstName;
       this.user.lastName = this.lastName;
@@ -111,7 +112,8 @@ export default {
       this.user.email = this.email;
       this.user.password = this.password;
       this.user.department = this.department;
-      this.$store.state.users.push(this.user);
+      this.$store.commit('addUser',this.user);
+      // this.$store.state.users.push(this.user);
       //   console.log(this.$store.state.users);
     },
     checkLetter(name) {

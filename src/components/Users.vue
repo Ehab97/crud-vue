@@ -3,7 +3,7 @@
     <Header />
     <div class="container">
       <div class="row">
-        <div class="col-4" v-for="user in users" :key="user.id">
+        <div class="col-4" v-for="user in getUsers" :key="user.id">
           <div class="card text-dark bg-light mb-3" style="max-width: 18rem">
             <div class="card-header">{{ user.username }}</div>
             <div class="card-body">
@@ -31,27 +31,30 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      users: this.$store.state.users,
+      // users: this.$store.state.users,
     };
   },
   components: {
     Header,
   },
   created() {
-       
+    console.log(this.$store.getters.getUsers)
   },
   methods: {
     deleteUser(id) {
-     let allowDelete=confirm('Are you sure yo want to delete');
-      if(allowDelete){          
-          //  this.users=this.$store.state.users.filter(user=>user.id!==id);
-          //  this.$store.state.users.push(this.users);
-           this.$store.commit('deleteUser',id);
-           this.$router.push('/home');
+      let allowDelete = confirm("Are you sure yo want to delete");
+      if (allowDelete) {
+        this.$store.commit("deleteUser", id);
+        this.$router.push("/home");
       }
     },
 
   },
+  computed:{
+    getUsers(){
+      return this.$store.getters.getUsers;
+    }
+  }
 };
 </script>
 

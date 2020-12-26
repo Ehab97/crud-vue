@@ -3,7 +3,8 @@
     <Header />
     <div class="container">
       <div class="row">
-        <div class="col-8 m-auto" v-for="item in user" :key="item.id">
+        <!-- v-for="item in getUser" :key="item.id" -->
+        <div class="col-8 m-auto">
           <form>
             <div class="mb-3">
               <label class="form-label">user name</label>
@@ -11,67 +12,42 @@
                 type="text"
                 class="form-control"
                 v-model="username"
-                :placeholder="item.username"
+                @input="item.username"
               />
             </div>
             <div class="mb-3">
               <label class="form-label">Password</label>
-              <input
-                type="password"
-                class="form-control"
-                v-model="password"
-                :placeholder="item.password"
-              />
+              <input type="password" class="form-control" v-model="password" />
             </div>
             <div class="mb-3">
               <label class="form-label">first name</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="firstName"
-                :placeholder="item.firstName"
-              />
+              <input type="text" class="form-control" v-model="firstName" />
             </div>
             <div class="mb-3">
               <label class="form-label">last name</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="lastName"
-                :placeholder="item.lastName"
-              />
+              <input type="text" class="form-control" v-model="lastName" />
             </div>
             <div class="mb-3">
               <label class="form-label">email</label>
-              <input
-                type="email"
-                class="form-control"
-                v-model="email"
-                :placeholder="item.email"
-              />
+              <input type="email" class="form-control" v-model="email" />
             </div>
             <div class="mb-3">
               <label class="form-label">Phone number</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="phone"
-                :placeholder="item.phone"
-              />
+              <input type="text" class="form-control" v-model="phone" />
             </div>
             <div class="mb-3">
               <label>Example select</label>
-              <select
-                class="form-control"
-                v-model="department"
-                :placeholder="item.department"
-              >
+              <select class="form-control" v-model="department">
                 <option v-for="dept in departments" :key="dept">
                   {{ dept.name }}
                 </option>
               </select>
             </div>
-            <button class="btn btn-primary" @click.prevent="handleSubmit">
+            <button
+              class="btn btn-primary"
+              @click.prevent="handleSubmit"
+              @click="push"
+            >
               Save
             </button>
             <div class="alert alert-danger mt-5" role="alert" v-if="msgError">
@@ -93,7 +69,6 @@ export default {
     return {
       departments: deprtment,
       userId: null,
-      users: this.$store.state.users,
       username: "",
       firstName: "",
       lastName: "",
@@ -103,7 +78,7 @@ export default {
       user: [],
       clonedUser: [
         {
-          id: '',
+          id: "",
           username: "",
           firstName: "",
           lastName: "",
@@ -113,6 +88,10 @@ export default {
         },
       ],
       checker: "",
+      payload: {
+        id: 0,
+        user: [],
+      },
     };
   },
   methods: {
@@ -135,24 +114,6 @@ export default {
       } else if (this.validatePhone(this.phone)) {
         this.checker = "Enter valid phone number please";
       }
-      // this.clonedUser.id=this.$route.params.userId;
-      this.clonedUser.username = this.username;
-      this.clonedUser.firstName = this.firstName;
-      this.clonedUser.lastName = this.lastName;
-      this.clonedUser.phone = this.phone;
-      this.clonedUser.email = this.email;
-      this.clonedUser.password = this.password;
-      this.clonedUser.department = this.department;
-
-      this.$store.state.users.push(this.user);
-      //delete old
-      this.$store.state.users = this.$store.state.users.filter(
-        (user) => user.id != this.$route.params.userId
-      );
-      console.log(this.$store.state.users);
-      //add new
-      this.$store.state.users.push(this.clonedUser);
-      console.log(this.$store.state.users);
     },
     checkLetter(name) {
       const letters = /^[A-Za-z]+$/;
@@ -182,14 +143,45 @@ export default {
       }
       return false;
     },
+    push() {
+      this.clonedUser.id = this.userId;
+      this.clonedUser.username = this.username;
+      this.clonedUser.firstName = this.firstName;
+      this.clonedUser.lastName = this.lastName;
+      this.clonedUser.phone = this.phone;
+      this.clonedUser.email = this.email;
+      this.clonedUser.password = this.password;
+      this.clonedUser.department = this.department;
+      //this.$route.params.userId,this.clonedUser
+      this.payload.id = this.userId;
+      this.payload.user.push(this.clonedUser);
+      this.$store.commit("updateUser", this.payload);
+      console.log(this.clonedUser,this.payload);
+    },
   },
-  created() {
+  async created() {
     this.userId = this.$route.params.userId;
-    this.user = this.$store.state.users.filter(
-      (user) => user.id == this.userId
-    );
-    this.clonedUser.id=this.$route.params.userId;
+    console.log(this.clonedUser);
+    // this.clonedUser.id=this.userId;
+    // console.log(this.$store.getters.getUser(parseInt(this.userId,10)))
+    this.userId=this.item.id;
+    this.username=this.item.username;
+    this.firstName=this.item.firstName;
+    this.lastName=this.item.lastName;
+    this.phone=this.item.phone;
+    this.email=this.item.email;
+    this.password=this.item.password;
+    this.department=this.item.deprtment;
+    this.push();
   },
+  computed: {
+    item() {
+      return this.$store.getters.getUser(
+        parseInt(this.$route.params.userId, 10)
+      );
+    },
+  },
+  
 };
 </script>
 
